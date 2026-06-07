@@ -69,32 +69,35 @@ async function handleGetUserById(req, res) {
 
 async function handleUpdateUser(req, res) {
     try {
-        const userId = req.params.id;
-        const updateData = req.body;
+        console.log("ID:", req.params.id);
+        console.log("BODY:", req.body);
 
-        if (!userId) {
-            return res.status(400).json({ error: 'User ID is required' });
-        }
+        const updatedUser = await User.findByIdAndUpdate(
+            req.params.id,
+            req.body,
+            { new: true, runValidators: true }
+        );
 
-        const updatedUser = await User.findByIdAndUpdate(userId, updateData, { new: true });
+        console.log("UPDATED USER:", updatedUser);
 
         if (!updatedUser) {
-            return res.status(404).json({ error: 'User not found' });
+            return res.status(404).json({
+                error: "User not found"
+            });
         }
 
-        res.status(200).json({
-            message: 'User updated successfully',
-            user: updatedUser
-        });
+        return res.status(200).json(updatedUser);
 
     } catch (error) {
-        console.error('Error updating user:', error);
-        res.status(500).json({ error: error.message });
+        console.error("ERROR:", error);
+        return res.status(500).json({
+            error: error.message
+        });
     }
 }
 
 async function handleDeleteUser(req, res) {
-     try {
+    try {
         const userId = req.params.id;
 
         if (!userId) {

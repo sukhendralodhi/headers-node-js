@@ -21,7 +21,7 @@ connectDB(DB_URL).then(() => {
 
 
 // use routes
-app.use('/user', userRoutes);
+app.use('/api/user', userRoutes);
 
 
 // server check 
