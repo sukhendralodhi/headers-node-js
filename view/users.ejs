@@ -1,0 +1,26 @@
+<h1>
+    <%= message %>
+</h1>
+
+<table border="1">
+    <tr>
+        <th>Name</th>
+        <th>Email</th>
+        <th>Job Title</th>
+    </tr>
+
+    <% users.forEach(user=> { %>
+        <tr>
+            <td>
+                <%= user.firstName %>
+                    <%= user.lastName %>
+            </td>
+            <td>
+                <%= user.email %>
+            </td>
+            <td>
+                <%= user.jobTitle %>
+            </td>
+        </tr>
+        <% }) %>
+</table>
