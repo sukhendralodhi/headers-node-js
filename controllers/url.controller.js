@@ -6,8 +6,8 @@ async function handleGenerateShortUrl(req, res) {
         let { url } = req.body;
 
         if (!url) {
-            return res.status(400).json({
-                error: 'URL is required'
+            return res.render('home', {
+                error: 'URL is required',
             });
         }
 
@@ -18,12 +18,17 @@ async function handleGenerateShortUrl(req, res) {
             url = `https://${url}`;
         }
 
-        const checkRedirectUrl = await URL.findOne({ redirectUrl: url });
+        const checkRedirectUrl = await URL.findOne({
+            redirectUrl: url,
+        });
 
         if (checkRedirectUrl) {
-            return res.status(400).json({
-                error: "Url already exists"
-            })
+            const allUrls = await URL.find({});
+
+            return res.render('home', {
+                error: 'URL already exists',
+                urls: allUrls,
+            });
         }
 
         const shortId = nanoid(8);
@@ -31,19 +36,22 @@ async function handleGenerateShortUrl(req, res) {
         await URL.create({
             shortId,
             redirectUrl: url,
-            visitHistory: []
+            visitHistory: [],
         });
 
-        return res.render('home', { id: shortId, url: `${req.protocol}://${req.get('host')}/url/${shortId}` });
+        const allUrls = await URL.find({});
 
-        // return res.status(201).json({
-        //     id: shortId,
-        //     shortUrl: `${req.protocol}://${req.get('host')}/url/${shortId}`
-        // });
+        return res.render('home', {
+            id: shortId,
+            urls: allUrls,
+            success: 'Short URL generated successfully',
+        });
 
     } catch (error) {
-        return res.status(500).json({
-            error: 'Internal server error'
+        console.error(error);
+
+        return res.render('home', {
+            error: 'Internal server error',
         });
     }
 }
