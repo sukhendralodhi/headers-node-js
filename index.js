@@ -4,6 +4,7 @@ const dotenv = require('dotenv');
 dotenv.config();
 
 const userRoutes = require('./routes/user.route.js');
+const urlRoutes = require('./routes/url.router.js');
 const { connectDB } = require('./db/connection.js');
 
 
@@ -22,7 +23,7 @@ connectDB(DB_URL).then(() => {
 
 // use routes
 app.use('/api/user', userRoutes);
-
+app.use('/api/url', urlRoutes);
 
 // server check 
 app.listen(PORT, () => {
