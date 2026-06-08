@@ -34,10 +34,12 @@ async function handleGenerateShortUrl(req, res) {
             visitHistory: []
         });
 
-        return res.status(201).json({
-            id: shortId,
-            shortUrl: `${req.protocol}://${req.get('host')}/api/url/${shortId}`
-        });
+        return res.render('home', { id: shortId, url: `${req.protocol}://${req.get('host')}/url/${shortId}` });
+
+        // return res.status(201).json({
+        //     id: shortId,
+        //     shortUrl: `${req.protocol}://${req.get('host')}/url/${shortId}`
+        // });
 
     } catch (error) {
         return res.status(500).json({
@@ -96,10 +98,15 @@ async function handleAnalytics(req, res) {
             })
         }
 
-        return res.status(200).json({
+        return res.render('analytics', {
             totalClicks: entry.visitHistory.length,
             analytics: entry
         });
+
+        // return res.status(200).json({
+        //     totalClicks: entry.visitHistory.length,
+        //     analytics: entry
+        // });
 
     } catch (error) {
         return res.status(500).json({

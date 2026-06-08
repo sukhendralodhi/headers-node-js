@@ -3,14 +3,12 @@ const { handleGenerateShortUrl, handleGetRoute, handleAnalytics, handleGetAllUrl
 const router = express.Router();
 
 router.post('/', handleGenerateShortUrl);
-router.get('/:shortId', handleGetRoute);
-router.get('/analytics/:shortId', handleAnalytics);
-router.get('/', handleGetAllUrls);
-
-// health check route
 router.get('/health', async (req, res) => {
     console.log("hello from health route")
     return res.status(200).json({ message: 'URL service is healthy' });
 });
+router.get('/analytics/:shortId', handleAnalytics);
+router.get('/:shortId', handleGetRoute);
+router.get('/', handleGetAllUrls);
 
 module.exports = router;

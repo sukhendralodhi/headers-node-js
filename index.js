@@ -2,6 +2,7 @@ const express = require('express');
 const { default: User } = require('./models/user.model.js');
 const dotenv = require('dotenv');
 const cors = require('cors');
+const path = require('path');
 
 
 
@@ -9,11 +10,13 @@ dotenv.config();
 
 const userRoutes = require('./routes/user.route.js');
 const urlRoutes = require('./routes/url.router.js');
+const staticRoutes = require('./routes/static.router.js');
 const { connectDB } = require('./db/connection.js');
+const URL = require('./models/url.model.js');
 
 
 const app = express();
-app.use(express.urlencoded({ extended: true }));
+app.use(express.urlencoded({ extended: false }));
 app.use(express.json());
 // middlewares for cors
 app.use(cors({
@@ -21,6 +24,9 @@ app.use(cors({
     methods: ['GET', 'POST', 'PUT', 'DELETE'],
     credentials: true
 }));
+// ejs
+app.set('view engine', 'ejs');
+app.set('views', path.resolve('./views'));
 const PORT = process.env.PORT || 3000;
 const DB_URL = process.env.DB_URL;
 
@@ -30,10 +36,27 @@ connectDB(DB_URL).then(() => {
     console.error('Error connecting to MongoDB:', error);
 });
 
+// ejs example
+// app.get('/home', async (req, res) => {
+//     try {
+//         const allUrls = await URL.find({});
+//         console.log(allUrls);
+
+//         return res.render('home', {
+//             urls: allUrls
+//         });
+//     } catch (error) {
+//         console.error(error);
+//         return res.status(500).send('Internal Server Error');
+//     }
+// });
+
 
 // use routes
 app.use('/api/user', userRoutes);
-app.use('/api/url', urlRoutes);
+app.use('/url', urlRoutes);
+// static routes 
+app.use('/', staticRoutes);
 
 // server check 
 app.listen(PORT, () => {
