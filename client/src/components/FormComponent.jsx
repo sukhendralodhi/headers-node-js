@@ -1,11 +1,14 @@
 import axios from 'axios';
 import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 const FormComponent = () => {
     const [url, setUrl] = useState('');
     const [shortenedUrl, setShortenedUrl] = useState('');
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState('');
+
+    const navigate = useNavigate();
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -40,6 +43,8 @@ const FormComponent = () => {
                 `${import.meta.env.VITE_API_BASE_URL}/api/url/${id}`;
 
             setShortenedUrl(generatedShortUrl);
+            navigate('/urls');
+
             setUrl('');
         } catch (err) {
             if (err.response) {
@@ -108,6 +113,10 @@ const FormComponent = () => {
                 >
                     {loading ? 'Shortening...' : 'Shorten'}
                 </button>
+
+                <div>
+                    <a className='underline text-blue-700' href="/urls">Check all Urls</a>
+                </div>
 
                 {shortenedUrl && (
                     <div className="mt-4 p-4 border rounded-md bg-green-50">
