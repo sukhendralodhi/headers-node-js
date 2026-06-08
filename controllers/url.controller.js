@@ -35,7 +35,8 @@ async function handleGenerateShortUrl(req, res) {
         });
 
         return res.status(201).json({
-            id: shortId
+            id: shortId,
+            shortUrl: `${req.protocol}://${req.get('host')}/api/url/${shortId}`
         });
 
     } catch (error) {
