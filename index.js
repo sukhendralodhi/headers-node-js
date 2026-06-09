@@ -3,6 +3,7 @@ const { default: User } = require('./models/user.model.js');
 const dotenv = require('dotenv');
 const cors = require('cors');
 const path = require('path');
+const cookieParser = require('cookie-parser');
 
 
 
@@ -11,13 +12,17 @@ dotenv.config();
 const userRoutes = require('./routes/user.route.js');
 const urlRoutes = require('./routes/url.router.js');
 const staticRoutes = require('./routes/static.router.js');
+const authRouter = require('./routes/auth.router.js')
+
 const { connectDB } = require('./db/connection.js');
 const URL = require('./models/url.model.js');
+const { restrictedToLoggedInUserOnly } = require('./middlewares/auth.middleware.js');
 
 
 const app = express();
 app.use(express.urlencoded({ extended: false }));
 app.use(express.json());
+app.use(cookieParser());
 // middlewares for cors
 app.use(cors({
     origin: 'http://localhost:5174' || 'http://localhost:5174',
@@ -54,9 +59,12 @@ connectDB(DB_URL).then(() => {
 
 // use routes
 app.use('/api/user', userRoutes);
-app.use('/url', urlRoutes);
+app.use('/url', restrictedToLoggedInUserOnly, urlRoutes);
 // static routes 
 app.use('/', staticRoutes);
+
+// auth router
+app.use('/auth', authRouter);
 
 // server check 
 app.listen(PORT, () => {
